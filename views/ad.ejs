@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+
+<head>
+	
+    	<title><% if(data.static){ %><%=data.static.name%>チケット一覧｜<%}%>チケなう</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="abstract" content="<% if(data.static){ %><%=data.static.name%>のチケット情報。<%}%>Twitterでつぶやかれた<% if(data.static){ %><%=data.static.name%>の<%}%>チケットについてリアルタイムに検索。">
+    <meta name="description" content="<% if(data.static){ %><%=data.static.name%>のチケット情報。<%}%>Twitterでつぶやかれた<% if(data.static){ %><%=data.static.name%>の<%}%>チケットについてリアルタイムに検索。">
+    <meta name="keyword" content="<% if(data.static){ %><%=data.static.name%>,<%}%>チケット,交換,グッズ,トレカ,コンサート,ライブ">
+
+    <meta property="og:title" content="<% if(data.static){ %><%=data.static.name%>チケット一覧｜<%}%>チケなう" />
+    <meta property="og:description" content="<% if(data.static){ %><%=data.static.name%>のチケット情報。<%}%>Twitterでつぶやかれた<% if(data.static){ %><%=data.static.name%>の<%}%>チケットについてリアルタイムに検索。">
+    <meta property="og:url" content="http://ticketnow.jp/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="チケなう" />
+    <meta property="og:locale" content="ja_JP" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link rel="shortcut icon" href="favicon.png" type="image/png" />
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="alternate" hreflang="ja" href="https://ticketsnow.jp/" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="non-responsive.css">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="ttk.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css" rel="stylesheet">
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/locales/bootstrap-datepicker.ja.min.js"></script>
+<!--    <script type="text/javascript" src="jquery_bottom.js"></script> -->
+    <script type="text/javascript" src="ttk.js"></script>
+	<!-- gwa -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-90991432-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+    <script type="text/javascript">
+    var max_id = <%=data.max_id%>;
+    var min_id = <%=data.min_id%>;
+    </script>
+
+</head>
+
+<body>
+    <header></header>
+    <section>
+    <div class="container">
+    <div id="logo">
+        <a href="/" class="logo-img">チケなう</a>
+    </div>
+    <h1>チケなうは全国のチケットをTwitterの情報で検索するサービスです</h1>
+    </div>
+    	<div class="container header-panel">
+            <div class="panel panel-default search-box">
+                <div class="panel-body">
+		<form id="ttk-form">
+                    <div class="form-inline">
+                        <div class="form-artist">
+                            <div>
+                                <label class="">アーティスト名</label>
+                            </div>
+                            <div>
+                                <input type="text" class="form-control" id="artist" placeholder="アーティスト名または公演名を入力" value="<%=data.request.artist %>">
+                            </div>
+                        </div>
+                        <div class="form-place">
+                            <label class="">場所</label>
+                            <input type="text" class="form-control" id="place" placeholder="都道府県、会場名を入力" value="<%=data.request.place %>">
+                        </div>
+                        <div class="form-date">
+                            <label class="">日付</label>
+                            <input type="text" class="form-control" id="date" placeholder="日付を選択" value="<%=data.request.date %>">
+                        </div>
+                        <div class="form-search">
+                            <label class="">　</label>
+                            <button id="search" class="btn form-control btn-search"><span class="glyphicon glyphicon-search"></span><span class="search-btn-str">検索</span></button>
+                        </div>
+                        <input type="hidden" id="keyword" value="<%=data.request.keyword %>">
+                    </div>
+		</form>
+                </div>
+            </div>
+            <div class="search-box2">
+		<form id="ttk-form2">
+		<div class="input-group">
+			<input type="text" class="form-control" id="artist2" placeholder="アーティスト名または公演名を入力" value="<%=data.request.artist %>">
+			<span class="input-group-btn">
+				<button id="search2" class="btn form-control btn-search"><span class="glyphicon glyphicon-search"></span></button>
+			</span>
+		</div>
+		</form>
+	    </div>
+        </div>
+        <div class="container body-panel">
+        <div class="left col-xs-8">
+            <div class="row">
+                <div id="search-query" class="wrap-h4">
+                    <h4>
+                        <%
+                            var req=[];
+                            for(var i in data.request){
+                                if(data.request[i]!=""){
+                                    req.push(data.request[i]);
+                                }
+                            }
+//                            console.log(req);
+                            if(data.static){
+                        %>
+                        <%=data.static.name %>のチケット検索結果
+                        <%
+                            }else if(req.length>0){
+                        %>
+                        <%=req.join(" ") %>のチケット検索結果
+                        <%
+                            }else{
+                        %>
+                        チケットの検索結果
+                        <%
+                            }
+                        %>
+                    </h4>
+                </div>
+                <div id="ad-1" class="ads">
+<a href="https://px.a8.net/svt/ejp?a8mat=2TAC5O+5ZIXRM+342Q+BZO4H" target="_blank">
+<img border="0" width="468" height="60" alt="" src="https://www26.a8.net/svt/bgt?aid=170123532362&wid=001&eno=01&mid=s00000014525002014000&mc=1"></a>
+<img border="0" width="1" height="1" src="https://www18.a8.net/0.gif?a8mat=2TAC5O+5ZIXRM+342Q+BZO4H" alt="">                    
+                </div>
+		<div id="ad-2" class="ads">
+<a href="https://px.a8.net/svt/ejp?a8mat=2TAALB+7CXWZ6+342Q+62ENL" target="_blank">
+<img border="0" width="320" height="50" alt="" src="https://www24.a8.net/svt/bgt?aid=170121503445&wid=001&eno=01&mid=s00000014525001019000&mc=1"></a>
+<img border="0" width="1" height="1" src="https://www19.a8.net/0.gif?a8mat=2TAALB+7CXWZ6+342Q+62ENL" alt="">
+		</div>
+                <div id="search-option">
+                    <nav class="navbar navbar-default">
+                    	<div class="container-fluid">
+                    		<div class="navbar-header">
+                    			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbarEexample">
+                    				<span class="sr-only">Toggle navigation</span>
+                    				<span class="icon-bar"></span>
+                    				<span class="icon-bar"></span>
+                    				<span class="icon-bar"></span>
+                    			</button>
+                    		</div>
+                    		<div class="collapse navbar-collapse" id="navbarEexample">
+                    			<ul class="nav navbar-nav navbar-right">
+                    				<li class="dropdown" id="status">
+                    					<a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button">ステータス<span class="caret"></span></a>
+                    					<ul class="dropdown-menu" role="menu">
+                                                <li role="presentation"><a id="status-dropdown-all" data-category="status" data-value="" href="javascript:void(0)">すべて</a></li>
+                                                <li role="presentation"><a id="status-dropdown-sell" data-category="status" data-value="譲" href="javascript:void(0)">譲るツイート</a></li>
+                                                <li role="presentation"><a id="status-dropdown-buy" data-category="status" data-value="求" href="javascript:void(0)">求めるツイート</a></li>
+                                                <li role="presentation"><a id="status-dropdown-exchange" data-category="status" data-value="交換" href="javascript:void(0)">交換ツイート</a></li>
+                    					</ul>
+                    				</li>
+                    				<li class="dropdown" id="number">
+                    					<a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button">枚数<span class="caret"></span></a>
+                    					<ul class="dropdown-menu" role="menu">
+                                                <li role="presentation"><a id="number-dropdown-all" data-category="number" data-value="" href="javascript:void(0)">すべて</a></li>
+                                                <li role="presentation"><a id="number-dropdown-1" data-category="number" data-value="1枚" href="javascript:void(0)">1枚</a></li>
+                                                <li role="presentation"><a id="number-dropdown-2" data-category="number" data-value="2枚" href="javascript:void(0)">2枚</a></li>
+                                                <li role="presentation"><a id="number-dropdown-3" data-category="number" data-value="3枚" href="javascript:void(0)">3枚</a></li>
+                                                <li role="presentation"><a id="number-dropdown-4" data-category="number" data-value="4枚" href="javascript:void(0)">4枚</a></li>
+                    					</ul>
+                    				</li>
+                    			</ul>
+                    		</div>
+                    	</div>
+                    </nav>
+                </div>
+                <div id="messageView">
+                    <ol class="stream-items">
+                        <% if(!data.tweets.statuses || data.tweets.statuses.length==0){ %>
+                        <li>該当するツイートが見つかりませんでした。</li>
+                        <% }else{ %>
+                        <% for(var i=0;i<data.tweets.statuses.length;i++){
+                            var tweet = data.tweets.statuses[i]; %>
+                        <li class="stream-item">
+                            <div class="tweet">
+                                <div class="content">
+                                    <div class="stream-item-header">
+                                        <a class="tweetlink" rel="nofollow" href="https://twitter.com/<%=tweet.screen_name %>">
+                                            <img class="avatar" src="<%=tweet.user.profile_image_url.replace("http:","https:") %>">
+                                            <strong class="fullname"><%=tweet.user.name %></strong>
+                                            <span class="screen-name">@<%=tweet.user.screen_name %></span>
+                                        </a>
+                                        <a class="timeago" rel="nofollow" title="<%=tweet.timeago %>" href="<%=tweet.link%>"><%=tweet.timeago %></a>
+                                    </div>
+                                    <p class="tweet-text"><%-tweet.text_linked %></p>
+                                    <div class="tweet-action">
+                                        <a href="https://twitter.com/intent/tweet?in_reply_to=<%=tweet.id_str %>" rel="nofollow" target="_blank"><span class="glyphicon glyphicon-share-alt"></span></a>
+                                        <a href="https://twitter.com/intent/retweet?tweet_id=<%=tweet.id_str %>" rel="nofollow" target="_blank"><span class="glyphicon glyphicon-retweet"></span></a>
+                                        <a href="https://twitter.com/intent/favorite?tweet_id=<%=tweet.id_str %>" rel="nofollow" target="_blank"><span class="glyphicon glyphicon-heart"></span></a>
+                                    </div>
+<!--
+                                <div class="extraction">
+                                    <div class="sell"><div class="icon"></div><span class="sell-string"><%=tweet.str_sell %></span></div>
+                                    <div class="buy"><div class="icon"></div><span class="buy-string"><%=tweet.str_buy %></span></div>
+                                </div>
+                            </div>
+-->
+                        </div><!-- /.tweet -->
+                        </li>
+                        <% } %>
+                        <% } %>
+                    </ol>
+                </div>
+            </div>
+            <div class="readmore">
+                <button class="btn">もっと見る</button>
+            </div>
+            <div id="ad-ft1" class="ads">
+                <div class="col-xs-6">
+                    <a href="https://px.a8.net/svt/ejp?a8mat=2TAALB+7CXWZ6+342Q+62U35" target="_blank">
+        <img border="0" width="250" height="250" alt="" src="https://www29.a8.net/svt/bgt?aid=170121503445&wid=001&eno=01&mid=s00000014525001021000&mc=1"></a>
+        <img border="0" width="1" height="1" src="https://www15.a8.net/0.gif?a8mat=2TAALB+7CXWZ6+342Q+62U35" alt="">
+                </div>
+                <div class="col-xs-6">
+<a href="https://px.a8.net/svt/ejp?a8mat=2TAALB+7CXWZ6+342Q+62MDD" target="_blank">
+<img border="0" width="250" height="250" alt="" src="https://www27.a8.net/svt/bgt?aid=170121503445&wid=001&eno=01&mid=s00000014525001020000&mc=1"></a>
+<img border="0" width="1" height="1" src="https://www11.a8.net/0.gif?a8mat=2TAALB+7CXWZ6+342Q+62MDD" alt="">                </div>
+            </div>
+            <div class="loading"></div>
+        </div>
+        <div class="right col-xs-4">
+            <div class="row">
+               <div id="ad-pd" class="ads">
+<a href="https://px.a8.net/svt/ejp?a8mat=2TAC5O+52S3HU+2LQ6+669JL" target="_blank">
+<img border="0" width="300" height="250" alt="" src="https://www21.a8.net/svt/bgt?aid=170123532307&wid=001&eno=01&mid=s00000012147001037000&mc=1"></a>
+<img border="0" width="1" height="1" src="https://www14.a8.net/0.gif?a8mat=2TAC5O+52S3HU+2LQ6+669JL" alt="">
+               </div>
+               <div id="artist-list">
+               <% for(category in data.category){ %>
+               <div id="list-<%=category %>">
+		<div class="wrap-h4">
+                   <h4><%=data.category[category] %>のチケット</h4>
+		</div>
+                   <ul><% data.ads[category].forEach(function(list){ %>
+<!--                       <li><a href="/?artist=<%=list.name%>&keyword=<%=list.keyword%>"><%=list.name %></a></li> -->
+                       <li><a class="listlink" href="<%=list.url%>"><%=list.name %></a></li>
+                        <% }) %>
+                    </ul>
+               </div>
+               <% } %>
+               </div>
+             <div id="ad-bd" class="ads">
+<a href="https://px.a8.net/svt/ejp?a8mat=2TAC5O+5ZIXRM+342Q+BZ8OX" target="_blank">
+<img border="0" width="300" height="250" alt="" src="https://www28.a8.net/svt/bgt?aid=170123532362&wid=001&eno=01&mid=s00000014525002012000&mc=1"></a>
+<img border="0" width="1" height="1" src="https://www17.a8.net/0.gif?a8mat=2TAC5O+5ZIXRM+342Q+BZ8OX" alt="">                 
+             </div>
+             </div>
+        </div>
+        <div class="copyright sp">
+            Copyright (c) <%=new Date().getFullYear()%> チケなう All rights reserved.
+        </div>
+    </section>
+    <footer>
+             <div id="ad-ft2" class="ads">
+<a href="https://px.a8.net/svt/ejp?a8mat=2TAEIL+8V4D0Y+320U+5ZU2A" target="_blank">日本最大級のチケット売買サイト「チケットキャンプ」</a>
+<img border="0" width="1" height="1" src="https://www12.a8.net/0.gif?a8mat=2TAEIL+8V4D0Y+320U+5ZU2A" alt="">
+             </div>
+        <div class="copyright pc">
+            Copyright (c) <%=new Date().getFullYear()%> チケなう All rights reserved.
+        </div>
+     </footer>
+</body>
+
+</html>

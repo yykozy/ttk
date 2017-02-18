@@ -9,6 +9,8 @@
     "async": "~0.2.8",
     "ejs": "^2.5.5",
     "express": "~3.2.4",
-    "socket.io": "~0.9.14"
+    "mecab-async": "^0.1.0",
+    "socket.io": "~0.9.14",
+    "twitter": "^1.7.0"
   }
 }

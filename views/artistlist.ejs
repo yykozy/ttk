@@ -1,0 +1,13 @@
+               <% for(category in data.category){ %>
+		<% if(Object.keys(data.ads[category]).length==0) continue; %>
+               <div id="list-<%=category %>">
+		<div class="wrap-h4">
+                   <h4><%=data.category[category] %>のチケット</h4>
+		</div>
+                   <ul><% data.ads[category].forEach(function(list){ %>
+                       <li><a class="listlink" href="<%=list.url%>"><%=list.name %></a></li>
+                        <% }) %>
+                    </ul>
+               </div>
+               <% } %>
+

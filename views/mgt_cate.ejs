@@ -1,0 +1,20 @@
+<html>
+<head>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="/mgt_cate.js"></script>
+</head>
+<body>
+<h3>チケなうEDIT</h3>
+<a href="/_mgt">TOP</a> ＞カテゴリ<br/>
+<ul>
+<% for(var i in category){ %>
+<li><a href="/_mgt/cate?g=<%=i%>" id="<%=i%>"><%=category[i]%></a></li>
+<%}%>
+<li><a href="/_mgt/artist" id="artist_edit">アーティストリスト</a></li>
+</ul>
+<TEXTAREA rows=<%=Object.keys(category).length+1%> cols=100 id="category" name="category"><% for(var i in category){%><%=i+"\t"+category[i].trim()+"\n"%><%}%></TEXTAREA>
+<br/>
+<button id="edit">カテゴリリスト更新</button>
+</body>
+</html>

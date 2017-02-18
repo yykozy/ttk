@@ -1,0 +1,3 @@
+jpop	人気
+kpop	K-POP
+johnny	ジャニーズ

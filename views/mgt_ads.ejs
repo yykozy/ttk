@@ -1,0 +1,20 @@
+<html>
+<head>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="/mgt_ads.js"></script>
+</head>
+<body>
+<h3>チケなうEDIT</h3>
+<a href="/_mgt">TOP</a> ＞広告<br/>
+<ul>
+<% for(var i in ads){ %>
+<% if( i == "" ) continue; %>
+<li><a href="/_mgt/ads?g=<%=i%>" id="<%=i%>"><%=ads[i]%></a></li>
+<%}%>
+</ul>
+<TEXTAREA rows=20 cols=50 id="ads" name="ads"><%=text%></TEXTAREA>
+<br/>
+<button id="edit">広告枠リスト更新</button>
+</body>
+</html>
